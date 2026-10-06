@@ -1,80 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black">
+    android:orientation="vertical"
+    android:background="@color/stage_bg">
 
-    <ImageView
-        android:id="@+id/imageView"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@string/stage_title"
-        android:scaleType="fitCenter" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/stage_bar"
+        app:navigationIcon="@drawable/ic_back"
+        app:navigationIconTint="@color/white"
+        app:subtitleTextColor="#9AA4B2"
+        app:title="@string/stage_title"
+        app:titleTextColor="@color/white" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/stage_title"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="28dp"
+            android:textColor="#9AA4B2"
+            android:textSize="14sp" />
+    </FrameLayout>
 
     <LinearLayout
-        android:id="@+id/overlay"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:background="@color/stage_bar"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReplay"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="#99000000"
-            android:orientation="horizontal"
-            android:padding="10dp">
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="@string/replay"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/fpsText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/fps_na"
-                android:textColor="#7CFC9A"
-                android:textSize="13sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/statusText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="#DDDDDD"
-                android:textSize="13sp" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnExport"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="#99000000"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="10dp">
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="@string/export"
+            android:textColor="#1A1A1A"
+            android:textSize="12sp"
+            app:backgroundTint="@color/accent"
+            app:icon="@drawable/ic_download"
+            app:iconTint="#1A1A1A" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnReplay"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:text="@string/replay"
-                android:textColor="#FFFFFF" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnStop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/stop"
-                app:backgroundTint="@color/accent"
-                android:textColor="#1A1A1A" />
-        </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLog"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/log"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
     </LinearLayout>
-</FrameLayout>
+</LinearLayout>

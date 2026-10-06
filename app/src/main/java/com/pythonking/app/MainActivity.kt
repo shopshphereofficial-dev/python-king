@@ -9,6 +9,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -54,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         tvOutput = findViewById(R.id.tvOutput)
         btnRun = findViewById(R.id.btnRun)
 
-        findViewById<Button>(R.id.btnRun).setOnClickListener { runCode() }
+        btnRun.setOnClickListener { runCode() }
         findViewById<Button>(R.id.btnAnimate).setOnClickListener { openStage() }
         findViewById<Button>(R.id.btnPaste).setOnClickListener { pasteFromClipboard() }
         findViewById<Button>(R.id.btnCopy).setOnClickListener { copyToClipboard() }
@@ -65,6 +67,33 @@ class MainActivity : AppCompatActivity() {
             openPy.launch(arrayOf("text/x-python", "text/plain", "*/*"))
         }
         findViewById<Button>(R.id.btnSaveScript).setOnClickListener { saveScript() }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_guide -> {
+                showDialog(getString(R.string.guide_title), Guide.TEXT)
+                true
+            }
+            R.id.action_about -> {
+                showDialog(getString(R.string.about_title), getString(R.string.about_text))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showDialog(title: String, message: String) {
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok, null)
+            .show()
     }
 
     // ---------- clipboard ----------

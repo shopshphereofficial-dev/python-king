@@ -7,21 +7,19 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
 import java.io.File
 
 class StageActivity : AppCompatActivity() {
@@ -31,17 +29,22 @@ class StageActivity : AppCompatActivity() {
         private const val EXPORT_FPS = 20
     }
 
+    private lateinit var toolbar: MaterialToolbar
     private lateinit var imageView: ImageView
-    private lateinit var fpsText: TextView
     private lateinit var statusText: TextView
-    private lateinit var overlay: View
+    private lateinit var btnReplay: MaterialButton
+    private lateinit var btnExport: MaterialButton
+    private lateinit var btnLog: MaterialButton
 
     private val main = Handler(Looper.getMainLooper())
     private var frameCount = 0
     private var fpsFrames = 0
     private var fpsSince = 0L
+    private var lastFps = 0.0
     private var running = false
+    private var busy = false
     private var replaying = false
+    private var lastOutput = ""
     private var pendingAction: (() -> Unit)? = null
 
     private val requestStorage =
@@ -55,32 +58,21 @@ class StageActivity : AppCompatActivity() {
             }
         }
 
-    /** Python calls onFrame() for every frame it produces. */
+    /** Python calls this for every frame it produces. */
     inner class FrameBridge {
         @Suppress("unused")
         fun onFrame(png: ByteArray, width: Int, height: Int) {
-            val bmp = try {
-                BitmapFactory.decodeByteArray(png, 0, png.size)
-            } catch (_: Throwable) {
-                null
-            } ?: return
+            deliver(png)
+        }
 
-            frameCount++
-            fpsFrames++
-            val now = System.currentTimeMillis()
-            if (fpsSince == 0L) fpsSince = now
-            var fps = -1.0
-            if (now - fpsSince >= 500) {
-                fps = fpsFrames * 1000.0 / (now - fpsSince)
-                fpsSince = now
-                fpsFrames = 0
-            }
-            val shownFps = fps
-            val count = frameCount
-            main.post {
-                imageView.setImageBitmap(bmp)
-                if (shownFps >= 0) fpsText.text = getString(R.string.fps_fmt, shownFps)
-                statusText.text = getString(R.string.frame_fmt, count)
+        @Suppress("unused")
+        fun onFrameFile(path: String, width: Int, height: Int) {
+            try {
+                val f = File(path)
+                val bytes = f.readBytes()
+                f.delete()
+                deliver(bytes)
+            } catch (_: Throwable) {
             }
         }
     }
@@ -89,19 +81,19 @@ class StageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stage)
 
+        toolbar = findViewById(R.id.toolbar)
         imageView = findViewById(R.id.imageView)
-        fpsText = findViewById(R.id.fpsText)
         statusText = findViewById(R.id.statusText)
-        overlay = findViewById(R.id.overlay)
+        btnReplay = findViewById(R.id.btnReplay)
+        btnExport = findViewById(R.id.btnExport)
+        btnLog = findViewById(R.id.btnLog)
 
-        enterImmersive()
+        setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener { finish() }
 
-        imageView.setOnClickListener {
-            overlay.visibility =
-                if (overlay.visibility == View.VISIBLE) View.GONE else View.VISIBLE
-        }
-        findViewById<View>(R.id.btnStop).setOnClickListener { finish() }
-        findViewById<View>(R.id.btnReplay).setOnClickListener { replay() }
+        btnReplay.setOnClickListener { replay() }
+        btnExport.setOnClickListener { showExportDialog() }
+        btnLog.setOnClickListener { showLog() }
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -109,64 +101,113 @@ class StageActivity : AppCompatActivity() {
             }
         })
 
+        updateToolbar()
         val code = intent.getStringExtra(EXTRA_CODE).orEmpty()
         runAnimation(code)
     }
 
-    private fun enterImmersive() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        val controller = WindowInsetsControllerCompat(window, window.decorView)
-        controller.hide(WindowInsetsCompat.Type.systemBars())
-        controller.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    private fun deliver(png: ByteArray) {
+        val bmp = try {
+            BitmapFactory.decodeByteArray(png, 0, png.size)
+        } catch (_: Throwable) {
+            null
+        } ?: return
+
+        frameCount++
+        fpsFrames++
+        val now = System.currentTimeMillis()
+        if (fpsSince == 0L) fpsSince = now
+        if (now - fpsSince >= 500) {
+            lastFps = fpsFrames * 1000.0 / (now - fpsSince)
+            fpsSince = now
+            fpsFrames = 0
+        }
+        main.post {
+            imageView.setImageBitmap(bmp)
+            statusText.visibility = View.GONE
+            updateToolbar()
+        }
+    }
+
+    private fun updateToolbar() {
+        toolbar.subtitle = if (frameCount > 0) {
+            getString(R.string.toolbar_stats, lastFps, frameCount)
+        } else {
+            getString(R.string.waiting_frames)
+        }
     }
 
     private fun runAnimation(code: String) {
-        if (running || code.isBlank()) return
+        if (running) return
+        if (code.isBlank()) {
+            statusText.text = getString(R.string.enter_code_first)
+            statusText.visibility = View.VISIBLE
+            return
+        }
         running = true
+        busy = true
         frameCount = 0
         fpsFrames = 0
         fpsSince = 0L
+        lastFps = 0.0
         imageView.setImageDrawable(null)
-        statusText.text = getString(R.string.running)
+        statusText.text = getString(R.string.running_animation)
+        statusText.visibility = View.VISIBLE
+        updateButtons()
 
         Thread {
+            var output = ""
+            var error: String? = null
             try {
                 if (!Python.isStarted()) {
                     Python.start(AndroidPlatform(applicationContext))
                 }
                 val py = Python.getInstance()
                 val king = py.getModule("kinganim")
+                king.callAttr("set_tmp_dir", cacheDir.absolutePath)
                 king.callAttr("attach", FrameBridge())
                 king.callAttr("clear")
-                val out = py.getModule("runner").callAttr("run_code", code).toString()
-                val n = king.callAttr("frame_count").toInt()
-                main.post {
-                    running = false
-                    statusText.text = if (n > 0) {
-                        getString(R.string.frames_ready, n)
-                    } else {
-                        getString(R.string.no_frames)
-                    }
-                    if (out.isNotBlank() && n == 0) {
-                        Toast.makeText(this, out, Toast.LENGTH_LONG).show()
-                    }
-                    invalidateOptionsMenu()
+                output = py.getModule("runner").callAttr("run_code", code).toString()
+                val bridgeProblem = king.callAttr("bridge_error").toString()
+                if (bridgeProblem.isNotBlank()) {
+                    output += "\n[display problem] " + bridgeProblem + "\n"
                 }
             } catch (t: Throwable) {
-                val msg = t.message ?: t.toString()
-                main.post {
-                    running = false
-                    statusText.text = getString(R.string.python_error)
-                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
-                    invalidateOptionsMenu()
+                error = t.message ?: t.toString()
+            }
+            val out = output
+            val err = error
+            main.post {
+                running = false
+                busy = false
+                lastOutput = out
+                if (err != null) {
+                    lastOutput = "Exception: " + err + "\n\n" + out
+                    statusText.text = getString(R.string.script_failed_tap_log)
+                    statusText.visibility = View.VISIBLE
+                } else if (frameCount == 0) {
+                    statusText.text = getString(R.string.no_frames_tap_log)
+                    statusText.visibility = View.VISIBLE
+                    if (out.isNotBlank()) showLog()
+                } else {
+                    statusText.visibility = View.GONE
                 }
+                updateToolbar()
+                updateButtons()
             }
         }.start()
     }
 
+    private fun updateButtons() {
+        val canExport = frameCount > 0 && !running && !busy
+        btnExport.isEnabled = canExport
+        btnReplay.isEnabled = canExport
+        btnExport.alpha = if (canExport) 1f else 0.5f
+        btnReplay.alpha = if (canExport) 1f else 0.5f
+    }
+
     private fun replay() {
-        if (replaying || running || frameCount <= 0) return
+        if (replaying || running || busy || frameCount <= 0) return
         replaying = true
         val total = frameCount
         Thread {
@@ -185,15 +226,44 @@ class StageActivity : AppCompatActivity() {
         }.start()
     }
 
-    // ---------- export ----------
+    private fun showLog() {
+        val text = if (lastOutput.isBlank()) getString(R.string.no_output) else lastOutput
+        AlertDialog.Builder(this)
+            .setTitle(R.string.log_title)
+            .setMessage(text)
+            .setPositiveButton(android.R.string.ok, null)
+            .show()
+    }
+
+    private fun showExportDialog() {
+        if (frameCount <= 0) {
+            Toast.makeText(this, R.string.no_frames, Toast.LENGTH_SHORT).show()
+            return
+        }
+        val items = arrayOf(
+            getString(R.string.exp_mp4),
+            getString(R.string.exp_gif),
+            getString(R.string.exp_pdf),
+            getString(R.string.exp_png)
+        )
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.export_title, frameCount))
+            .setItems(items) { _, which ->
+                when (which) {
+                    0 -> exportMp4()
+                    1 -> exportViaPython("gif", "gif", "image/gif")
+                    2 -> exportViaPython("pdf", "pdf", "application/pdf")
+                    else -> exportViaPython("png", "png", "image/png")
+                }
+            }
+            .show()
+    }
 
     private fun exportMp4() = withStorage {
-        val count = frameCount
-        if (count <= 0) {
-            Toast.makeText(this, R.string.no_frames, Toast.LENGTH_SHORT).show()
-            return@withStorage
-        }
-        statusText.text = getString(R.string.exporting)
+        if (frameCount <= 0 || busy) return@withStorage
+        busy = true
+        updateButtons()
+        toolbar.subtitle = getString(R.string.exporting)
 
         Thread {
             var ok = false
@@ -210,18 +280,22 @@ class StageActivity : AppCompatActivity() {
                     val f = File(cacheDir, "anim_" + System.currentTimeMillis() + ".mp4")
                     tmp = f
                     val enc = Mp4Encoder(w, h, EXPORT_FPS, f)
-                    for (i in 0 until count) {
-                        val bytes = king.callAttr("frame_bytes", i)
-                            .toJava(ByteArray::class.java) as ByteArray
-                        val bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.size) ?: continue
-                        enc.addFrame(bm)
-                        bm.recycle()
-                    }
-                    val done = enc.finish()
-                    if (done && f.exists() && f.length() > 0) {
-                        ok = FileSaver.save(
-                            this, "animation_" + System.currentTimeMillis() + ".mp4", "video/mp4"
-                        ) { out -> f.inputStream().use { it.copyTo(out) } }
+                    try {
+                        for (i in 0 until frameCount) {
+                            val bytes = king.callAttr("frame_bytes", i)
+                                .toJava(ByteArray::class.java) as ByteArray
+                            val bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.size) ?: continue
+                            enc.addFrame(bm)
+                            bm.recycle()
+                        }
+                    } finally {
+                        if (enc.finish() && f.exists() && f.length() > 0) {
+                            ok = FileSaver.save(
+                                this,
+                                "animation_" + System.currentTimeMillis() + ".mp4",
+                                "video/mp4"
+                            ) { out -> f.inputStream().use { it.copyTo(out) } }
+                        }
                     }
                 }
             } catch (_: Throwable) {
@@ -233,12 +307,10 @@ class StageActivity : AppCompatActivity() {
     }
 
     private fun exportViaPython(kind: String, ext: String, mime: String) = withStorage {
-        val count = frameCount
-        if (count <= 0) {
-            Toast.makeText(this, R.string.no_frames, Toast.LENGTH_SHORT).show()
-            return@withStorage
-        }
-        statusText.text = getString(R.string.exporting)
+        if (frameCount <= 0 || busy) return@withStorage
+        busy = true
+        updateButtons()
+        toolbar.subtitle = getString(R.string.exporting)
 
         Thread {
             var ok = false
@@ -263,7 +335,9 @@ class StageActivity : AppCompatActivity() {
 
     private fun finishExport(ok: Boolean) {
         main.post {
-            statusText.text = getString(R.string.frames_ready, frameCount)
+            busy = false
+            updateButtons()
+            updateToolbar()
             Toast.makeText(
                 this,
                 if (ok) R.string.saved_to_downloads else R.string.export_failed,
@@ -287,41 +361,5 @@ class StageActivity : AppCompatActivity() {
             this,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.stage_menu, menu)
-        return true
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        val on = frameCount > 0 && !running
-        menu.findItem(R.id.action_save_mp4)?.isEnabled = on
-        menu.findItem(R.id.action_save_gif)?.isEnabled = on
-        menu.findItem(R.id.action_save_pdf)?.isEnabled = on
-        menu.findItem(R.id.action_save_png)?.isEnabled = on
-        menu.findItem(R.id.action_replay)?.isEnabled = on
-        return super.onPrepareOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_replay -> {
-                replay(); true
-            }
-            R.id.action_save_mp4 -> {
-                exportMp4(); true
-            }
-            R.id.action_save_gif -> {
-                exportViaPython("gif", "gif", "image/gif"); true
-            }
-            R.id.action_save_pdf -> {
-                exportViaPython("pdf", "pdf", "application/pdf"); true
-            }
-            R.id.action_save_png -> {
-                exportViaPython("png", "png", "image/png"); true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 }

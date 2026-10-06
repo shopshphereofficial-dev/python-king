@@ -20,6 +20,7 @@ Example
 """
 
 import io
+import os
 import time
 
 try:
@@ -27,9 +28,11 @@ try:
 except Exception:  # pragma: no cover
     Image = None
 
-_frames = []      # PNG bytes, one per frame
-_sizes = []       # (width, height) per frame
-_bridge = None    # optional Java object with an onFrame(byte[], int, int) method
+_frames = []        # PNG bytes, one per frame
+_sizes = []         # (width, height) per frame
+_bridge = None      # Java object with onFrame(byte[], int, int)
+_bridge_error = ""  # last problem while talking to the app
+_tmp_dir = None     # writable folder supplied by the app
 MAX_FRAMES = 900
 
 try:
@@ -40,8 +43,20 @@ except Exception:
 
 def attach(bridge):
     """Called by the app to receive frames as they are produced."""
-    global _bridge
+    global _bridge, _bridge_error
     _bridge = bridge
+    _bridge_error = ""
+
+
+def set_tmp_dir(path):
+    """Folder the app lets us write temporary frame files into."""
+    global _tmp_dir
+    _tmp_dir = path
+
+
+def bridge_error():
+    """Empty string if everything is fine, otherwise the last problem."""
+    return _bridge_error
 
 
 def _to_pil(obj):
@@ -61,6 +76,8 @@ def _to_pil(obj):
         arr = np.asarray(obj)
         if arr.ndim == 2:
             arr = arr[:, :, None]
+        if arr.ndim != 3:
+            raise TypeError("numpy array must have 2 or 3 dimensions")
         if arr.shape[2] == 1:
             arr = np.repeat(arr, 3, axis=2)
         if arr.shape[2] == 4:
@@ -77,6 +94,29 @@ def _to_pil(obj):
     )
 
 
+def _emit(data, w, h):
+    """Hand one frame to the app, with a file-based fallback."""
+    global _bridge, _bridge_error
+    if _bridge is None:
+        return
+    try:
+        _bridge.onFrame(data, w, h)
+        return
+    except Exception as e:
+        _bridge_error = "onFrame failed: " + str(e)
+    # Fallback: write the frame to a file and let the app read it.
+    try:
+        if _tmp_dir is None:
+            raise RuntimeError("no temp dir available")
+        path = os.path.join(_tmp_dir, "kingframe_%d.png" % len(_frames))
+        with open(path, "wb") as fh:
+            fh.write(data)
+        _bridge.onFrameFile(path, w, h)
+    except Exception as e:
+        _bridge_error = "onFrameFile failed: " + str(e)
+        _bridge = None
+
+
 def show(obj):
     """Add one frame to the animation and display it in the app."""
     im = _to_pil(obj)
@@ -90,8 +130,7 @@ def show(obj):
     if len(_frames) > MAX_FRAMES:
         _frames.pop(0)
         _sizes.pop(0)
-    if _bridge is not None:
-        _bridge.onFrame(data, im.width, im.height)
+    _emit(data, im.width, im.height)
 
 
 def pause(seconds):

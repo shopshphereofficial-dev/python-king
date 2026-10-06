@@ -8,7 +8,8 @@ Python-drawn animations into downloadable **MP4 video, GIF, PDF or PNG** — all
 - **Full CPython 3.13** embedded via [Chaquopy](https://chaquo.com/chaquopy/) — real Python, not a toy interpreter.
 - **Batteries included:** `numpy`, `pillow` and `matplotlib` are pre-installed in the APK. No internet needed to run.
 - **Code workspace:** monospace editor with **Paste / Copy / Select all / Sample / Open .py / Save / Clear** and a **Run** button that shows stdout, stderr and full tracebacks.
-- **Run Animation:** renders the frames your script produces on a fullscreen immersive stage, with a live **FPS counter** and a **Replay** button.
+- **Run Animation:** renders the frames your script produces on a stage with a live **FPS counter**, a **Replay** button, a big **Export** button and a **Log** panel that shows exactly what your script printed (so failures are never silent).
+- **Built-in guide:** the ⋮ menu on the main screen explains which libraries work, what is not available, and the `kinganim` API.
 - **Export the animation** to any of these, saved to `Downloads/PythonKing/`:
   - **MP4 video** (H.264, encoded on-device with `MediaCodec`)
   - **GIF** (animated)

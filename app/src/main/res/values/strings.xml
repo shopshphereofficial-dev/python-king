@@ -3,7 +3,7 @@
     <string name="app_name">Python King</string>
     <string name="stage_title">Animation</string>
 
-    <string name="hint_code">Write or paste your Python code here.\nUse kinganim.show(...) to build an animation.</string>
+    <string name="hint_code">Write or paste your Python code here.\nUse kinganim.show(...) to build an animation.\nTap the ⋮ menu for the guide.</string>
     <string name="output_label">Output</string>
     <string name="running">Running...</string>
     <string name="no_output">(no output)</string>
@@ -30,20 +30,29 @@
     <string name="save_failed">Save nahi ho paya</string>
     <string name="permission_needed">Is kaam ke liye storage permission chahiye</string>
 
-    <string name="fps_na">-- fps</string>
-    <string name="fps_fmt">%1$.1f fps</string>
-    <string name="frame_fmt">frame %1$d</string>
-    <string name="frames_ready">%1$d frames ready - export from the menu</string>
+    <string name="waiting_frames">Starting...</string>
+    <string name="running_animation">Running your script - waiting for frames...</string>
+    <string name="toolbar_stats">%1$.1f fps  ·  %2$d frames</string>
+    <string name="script_failed_tap_log">Script failed - tap Log to see why</string>
+    <string name="no_frames_tap_log">No frames produced - tap Log for details</string>
     <string name="no_frames">Koi frame nahi bana. Script mein kinganim.show(...) use karo.</string>
+    <string name="log_title">Output / Log</string>
     <string name="exporting">Exporting...</string>
     <string name="saved_to_downloads">Saved to Downloads/PythonKing</string>
     <string name="export_failed">Export nahi ho paya</string>
     <string name="replay">Replay</string>
-    <string name="stop">Stop</string>
+    <string name="export">Export</string>
+    <string name="log">Log</string>
 
-    <string name="menu_replay">Replay animation</string>
-    <string name="menu_save_mp4">Save as video (MP4)</string>
-    <string name="menu_save_gif">Save as GIF</string>
-    <string name="menu_save_pdf">Save as PDF</string>
-    <string name="menu_save_png">Save as image (PNG)</string>
+    <string name="export_title">Export %1$d frames as</string>
+    <string name="exp_mp4">MP4 video</string>
+    <string name="exp_gif">Animated GIF</string>
+    <string name="exp_pdf">PDF document</string>
+    <string name="exp_png">PNG image</string>
+
+    <string name="menu_guide">How to write a script</string>
+    <string name="menu_about">About</string>
+    <string name="guide_title">How to write a script</string>
+    <string name="about_title">About Python King</string>
+    <string name="about_text">Python King runs a real Python 3.13 interpreter inside the app, fully offline.\n\nInstalled libraries: numpy, pillow (PIL), matplotlib.\n\nWrite a script that builds frames and hands each one to kinganim.show(...), then use Run Animation and Export to save it as MP4, GIF, PDF or PNG.\n\nEverything is saved to Downloads/PythonKing.\n\nNo ads. No tracking. No internet needed.</string>
 </resources>
