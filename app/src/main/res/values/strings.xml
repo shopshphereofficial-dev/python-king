@@ -3,7 +3,7 @@
     <string name="app_name">Python King</string>
     <string name="stage_title">Animation</string>
 
-    <string name="hint_code">Write or paste your Python code here.\nUse kinganim.show(...) to build an animation.\nTap the ⋮ menu for the guide.</string>
+    <string name="hint_code">Write or paste your Python code here.\nUse kinganim.show(...) to build an animation.\nTap the ⋮ menu for the guide, examples and packages.</string>
     <string name="output_label">Output</string>
     <string name="running">Running...</string>
     <string name="no_output">(no output)</string>
@@ -17,17 +17,25 @@
     <string name="clipboard_empty">Clipboard khaali hai</string>
     <string name="nothing_to_copy">Copy karne ke liye kuch nahi hai</string>
 
-    <string name="sample">Sample</string>
-    <string name="pick_sample">Pick a sample script</string>
+    <string name="examples">Examples</string>
+    <string name="no_examples">Koi example nahi mila</string>
+    <string name="snippets">Code snippets</string>
     <string name="open_py">Open .py</string>
-    <string name="save_script">Save</string>
+    <string name="save_script">Save script</string>
     <string name="clear">Clear</string>
     <string name="run">Run</string>
+    <string name="stop">Stop</string>
     <string name="animate">Run Animation</string>
 
-    <string name="could_not_read">File read nahi ho payi</string>
+    <string name="script_name">Script name</string>
+    <string name="my_scripts">My scripts</string>
+    <string name="no_scripts">Abhi koi script save nahi ki</string>
+    <string name="delete_script">Delete script</string>
+    <string name="deleted">Deleted</string>
+    <string name="script_saved_lib">Saved \"%1$s\" in My scripts</string>
     <string name="script_saved">Script saved to Downloads/PythonKing</string>
     <string name="save_failed">Save nahi ho paya</string>
+    <string name="could_not_read">File read nahi ho payi</string>
     <string name="permission_needed">Is kaam ke liye storage permission chahiye</string>
 
     <string name="waiting_frames">Starting...</string>
@@ -37,22 +45,57 @@
     <string name="no_frames_tap_log">No frames produced - tap Log for details</string>
     <string name="no_frames">Koi frame nahi bana. Script mein kinganim.show(...) use karo.</string>
     <string name="log_title">Output / Log</string>
-    <string name="exporting">Exporting...</string>
-    <string name="saved_to_downloads">Saved to Downloads/PythonKing</string>
-    <string name="export_failed">Export nahi ho paya</string>
+    <string name="stopping">Stopping...</string>
+
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="speed_fmt">%1$.1fx</string>
+    <string name="frame_of">%1$d / %2$d</string>
     <string name="replay">Replay</string>
     <string name="export">Export</string>
     <string name="log">Log</string>
+    <string name="zoom_in">+</string>
+    <string name="zoom_out">−</string>
+    <string name="zoom_fit">Fit</string>
 
+    <string name="exporting">Exporting...</string>
+    <string name="saved_title">Saved</string>
+    <string name="saved_to_downloads">Saved to Downloads/PythonKing</string>
+    <string name="export_failed">Export nahi ho paya</string>
+    <string name="share">Share</string>
     <string name="export_title">Export %1$d frames as</string>
     <string name="exp_mp4">MP4 video</string>
     <string name="exp_gif">Animated GIF</string>
+    <string name="exp_webp">Animated WebP</string>
+    <string name="exp_apng">APNG</string>
     <string name="exp_pdf">PDF document</string>
     <string name="exp_png">PNG image</string>
+    <string name="exp_sprite">Sprite sheet (PNG)</string>
+    <string name="exp_zip">ZIP of PNG frames</string>
+    <string name="pick_fps">Video frame rate</string>
+    <string name="pick_resolution">Video resolution</string>
+    <string name="res_source">Source (max 1080p)</string>
 
+    <string name="menu_library">My scripts</string>
+    <string name="menu_snippets">Insert snippet</string>
+    <string name="menu_export_py">Export .py to Downloads</string>
+    <string name="menu_packages">Python packages</string>
     <string name="menu_guide">How to write a script</string>
+    <string name="menu_theme">Theme</string>
+    <string name="menu_font">Editor font size</string>
     <string name="menu_about">About</string>
+
+    <string name="theme">Theme</string>
+    <string name="theme_system">Follow system</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="font_size">Editor font size</string>
+    <string name="packages_title">Python packages</string>
     <string name="guide_title">How to write a script</string>
     <string name="about_title">About Python King</string>
-    <string name="about_text">Python King runs a real Python 3.13 interpreter inside the app, fully offline.\n\nInstalled libraries: numpy, pillow (PIL), matplotlib.\n\nWrite a script that builds frames and hands each one to kinganim.show(...), then use Run Animation and Export to save it as MP4, GIF, PDF or PNG.\n\nEverything is saved to Downloads/PythonKing.\n\nNo ads. No tracking. No internet needed.</string>
+    <string name="about_text">Python King runs a real Python 3.13 interpreter inside the app, fully offline.\n\nInstalled: numpy, pillow (PIL), matplotlib, pandas, sympy, pywavelets, plus most of the standard library.\n\nWrite a script that builds frames and hands each one to kinganim.show(...), then Run Animation and Export to save it as MP4, GIF, WebP, APNG, PDF, PNG, a sprite sheet or a ZIP of frames.\n\nEverything is saved to Downloads/PythonKing.\n\nNo ads. No tracking. No internet needed.</string>
+
+    <string name="menu_reset_zoom">Reset zoom</string>
+    <string name="menu_loop">Loop playback</string>
+    <string name="menu_stop_script">Stop script</string>
 </resources>

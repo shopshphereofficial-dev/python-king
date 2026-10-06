@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brand">#4E9AD4</color>
+    <color name="brand_dark">#2B5B84</color>
+    <color name="accent">#E9B949</color>
+    <color name="status_bar">#0B0E13</color>
+
+    <color name="screen_bg">#0B0E13</color>
+    <color name="card_bg">#141A22</color>
+    <color name="editor_bg">#0F141A</color>
+    <color name="editor_text">#DCE4EE</color>
+    <color name="gutter_bg">#111820</color>
+    <color name="gutter_text">#556070</color>
+    <color name="toolbar_bg">#141A22</color>
+    <color name="toolbar_text">#E6EDF3</color>
+    <color name="text_primary">#E6EDF3</color>
+    <color name="text_secondary">#9AA4B2</color>
+    <color name="divider">#232C38</color>
+
+    <color name="syn_keyword">#FF7BA9</color>
+    <color name="syn_builtin">#6FD3C0</color>
+    <color name="syn_string">#9BE38A</color>
+    <color name="syn_comment">#66707E</color>
+    <color name="syn_number">#FFC66D</color>
+    <color name="syn_decorator">#C792EA</color>
+
+    <color name="stage_bg">#0B0E13</color>
+    <color name="stage_bar">#141A22</color>
+    <color name="stage_text">#E6EDF3</color>
+
+    <color name="ic_launcher_background">#FFFFFF</color>
+</resources>

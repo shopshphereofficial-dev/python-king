@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/stage_bg">
+    android:background="@color/stage_bg"
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
@@ -12,17 +12,17 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/stage_bar"
         app:navigationIcon="@drawable/ic_back"
-        app:navigationIconTint="@color/white"
+        app:navigationIconTint="@color/stage_text"
         app:subtitleTextColor="#9AA4B2"
         app:title="@string/stage_title"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@color/stage_text" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <ImageView
+        <com.pythonking.app.ZoomImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -44,9 +44,104 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/stage_bar"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="4dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnZoomOut"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:text="@string/zoom_out"
+            android:textColor="@color/stage_text" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnZoomIn"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:text="@string/zoom_in"
+            android:textColor="@color/stage_text" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnZoomFit"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:text="@string/zoom_fit"
+            android:textColor="@color/stage_text" />
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:max="0" />
+
+        <TextView
+            android:id="@+id/frameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="64dp"
+            android:gravity="end"
+            android:textColor="#9AA4B2"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/stage_bar"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:padding="6dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPlay"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="@string/play"
+            android:textColor="@color/stage_text"
+            android:textSize="12sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnStop"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="6dp"
+            android:text="@string/stop"
+            android:textColor="#FF8A8A"
+            android:textSize="12sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSpeed"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1.0x"
+            android:textColor="@color/stage_text"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/stage_bar"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="6dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnReplay"
@@ -56,7 +151,7 @@
             android:layout_weight="1"
             android:layout_marginEnd="6dp"
             android:text="@string/replay"
-            android:textColor="@color/white"
+            android:textColor="@color/stage_text"
             android:textSize="12sp" />
 
         <com.google.android.material.button.MaterialButton
@@ -79,7 +174,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/log"
-            android:textColor="@color/white"
+            android:textColor="@color/stage_text"
             android:textSize="12sp" />
     </LinearLayout>
 </LinearLayout>

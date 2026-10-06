@@ -1,11 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- brand -->
     <color name="brand">#3776AB</color>
     <color name="brand_dark">#2B5B84</color>
-    <color name="accent">#FFD43B</color>
-    <color name="bg">#EEF1F5</color>
-    <color name="white">#FFFFFF</color>
-    <color name="stage_bg">#0E1116</color>
-    <color name="stage_bar">#161B22</color>
+    <color name="accent">#E9B949</color>
+    <color name="status_bar">#2B5B84</color>
+
+    <!-- surfaces (light) -->
+    <color name="screen_bg">#EDF0F5</color>
+    <color name="card_bg">#FFFFFF</color>
+    <color name="editor_bg">#FFFFFF</color>
+    <color name="editor_text">#1B2430</color>
+    <color name="gutter_bg">#F1F4F8</color>
+    <color name="gutter_text">#98A2B3</color>
+    <color name="toolbar_bg">#3776AB</color>
+    <color name="toolbar_text">#FFFFFF</color>
+    <color name="text_primary">#1B2430</color>
+    <color name="text_secondary">#5A6472</color>
+    <color name="divider">#E2E7EF</color>
+
+    <!-- syntax (light) -->
+    <color name="syn_keyword">#C2185B</color>
+    <color name="syn_builtin">#00796B</color>
+    <color name="syn_string">#2E7D32</color>
+    <color name="syn_comment">#8A94A6</color>
+    <color name="syn_number">#B26A00</color>
+    <color name="syn_decorator">#7B1FA2</color>
+
+    <!-- stage -->
+    <color name="stage_bg">#0B0E13</color>
+    <color name="stage_bar">#141A22</color>
+    <color name="stage_text">#E6EDF3</color>
+
     <color name="ic_launcher_background">#FFFFFF</color>
 </resources>

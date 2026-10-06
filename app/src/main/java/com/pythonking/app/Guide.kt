@@ -7,29 +7,33 @@ object Guide {
 HOW TO WRITE A SCRIPT FOR THIS APP
 
 Runtime
-  - Python 3.13 (real CPython, embedded in the app, works offline)
-  - Installed libraries: numpy, pillow (PIL), matplotlib
-  - Plus most of the standard library: math, random, cmath,
-    itertools, collections, json, re, time, datetime, statistics,
-    colorsys, array, struct and more.
+  Python 3.13 (real CPython, embedded, works offline).
+  One script, top to bottom, on a background thread.
+  There is no console input - input() will fail.
+
+Installed libraries
+  numpy, pillow (PIL), matplotlib, pandas, sympy, pywavelets
+  Plus most of the standard library: math, random, cmath,
+  itertools, collections, json, re, datetime, statistics,
+  colorsys, hashlib, struct, base64 ...
 
 Not available (code using these will fail)
-  - pygame, tkinter, cv2/opencv, scipy, pandas, requests,
-    PyQt, kivy, seaborn, moviepy, imageio
-  - No GUI or window of any kind
-  - input() is not supported (there is no keyboard input)
-  - No internet, no installing packages, no writing files
+  pygame / pygame-ce, tkinter, turtle, curses, cv2, scikit-learn,
+  seaborn, moviepy, imageio, requests, kivy, PyQt, scipy
+  No GUI window, no audio, no camera, no file access, no network,
+  no pip install, no subprocess.
 
 Making an animation
   import kinganim
-  kinganim.show(obj)      add ONE frame (this is the only way)
-  kinganim.pause(sec)     optional delay between frames
-  kinganim.frame_count()  how many frames so far
+  kinganim.show(obj)      add ONE frame (the only way)
+  kinganim.pause(sec)     optional delay
+  kinganim.frame_count()  frames so far
+  kinganim.clear()        drop all frames
 
   show() accepts exactly three things:
-    1. a Pillow image            Image.new / ImageDraw
-    2. a matplotlib Figure       fig, not the Axes
-    3. a numpy array             shape (H,W) or (H,W,3), any dtype
+    1. a Pillow image        Image.new / ImageDraw
+    2. a matplotlib Figure   fig, not the Axes
+    3. a numpy array         (H,W) or (H,W,3), any dtype
 
   Do NOT call img.save(), plt.show() or fig.show().
   Just call kinganim.show(...) once per frame.
@@ -37,7 +41,8 @@ Making an animation
 Limits
   - up to 900 frames
   - keep frames 360-720 px on the long side
-  - expect roughly 10-40 fps (frames are drawn by Python)
+  - roughly 10-40 fps (frames are drawn by Python, not the GPU)
+  - the script must finish on its own; no while True
 
 matplotlib tip
   import matplotlib
@@ -45,24 +50,13 @@ matplotlib tip
   import matplotlib.pyplot as plt
   ... then plt.close(fig) after each figure.
 
-Typical script
-  from PIL import Image, ImageDraw
-  import math, kinganim
+Export formats
+  MP4 video (choose fps and resolution), animated GIF,
+  animated WebP, APNG, PDF, PNG image, sprite sheet,
+  ZIP of PNG frames. All saved to Downloads/PythonKing.
 
-  W = H = 480
-  N = 90
-  for i in range(N):
-      t = i / N
-      img = Image.new("RGB", (W, H), (10, 12, 28))
-      d = ImageDraw.Draw(img)
-      x = W/2 + 150*math.cos(2*math.pi*t)
-      y = H/2 + 150*math.sin(2*math.pi*t)
-      d.ellipse([x-30, y-30, x+30, y+30], fill=(0,200,255))
-      kinganim.show(img)
-
-  print("frames:", kinganim.frame_count())
-
-Steps: paste the code, tap Run to check for errors, then
-Run Animation, then Export (MP4 / GIF / PDF / PNG).
+Steps
+  Paste code -> Run (checks for errors) -> Run Animation
+  -> Stop / Replay / scrub the timeline -> Export.
     """.trimIndent()
 }

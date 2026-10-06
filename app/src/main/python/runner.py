@@ -7,7 +7,7 @@ def run_code(code):
     """Run the given Python source and return everything it printed.
 
     stdout and stderr are captured, and any exception is turned into a
-    normal traceback string so the app can show it in the output panel.
+    normal traceback string so the app can show it in the log panel.
     """
     buf = io.StringIO()
     old_out, old_err, old_in = sys.stdout, sys.stderr, sys.stdin
@@ -18,6 +18,8 @@ def run_code(code):
         compiled = compile(code, "<script>", "exec")
         glob = {"__name__": "__main__"}
         exec(compiled, glob)
+    except KeyboardInterrupt:
+        buf.write("[stopped by user]\n")
     except SystemExit as e:
         if e.code is not None:
             buf.write("SystemExit: %s\n" % (e.code,))
