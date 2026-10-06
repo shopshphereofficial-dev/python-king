@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Python King</string>
+    <string name="stage_title">Animation</string>
+
+    <string name="hint_code">Write or paste your Python code here.\nUse kinganim.show(...) to build an animation.</string>
+    <string name="output_label">Output</string>
+    <string name="running">Running...</string>
+    <string name="no_output">(no output)</string>
+    <string name="python_error">Python error</string>
+    <string name="enter_code_first">Pehle Python code likho ya paste karo</string>
+
+    <string name="paste">Paste</string>
+    <string name="copy">Copy</string>
+    <string name="select_all">Select all</string>
+    <string name="copied">Copied</string>
+    <string name="clipboard_empty">Clipboard khaali hai</string>
+    <string name="nothing_to_copy">Copy karne ke liye kuch nahi hai</string>
+
+    <string name="sample">Sample</string>
+    <string name="pick_sample">Pick a sample script</string>
+    <string name="open_py">Open .py</string>
+    <string name="save_script">Save</string>
+    <string name="clear">Clear</string>
+    <string name="run">Run</string>
+    <string name="animate">Run Animation</string>
+
+    <string name="could_not_read">File read nahi ho payi</string>
+    <string name="script_saved">Script saved to Downloads/PythonKing</string>
+    <string name="save_failed">Save nahi ho paya</string>
+    <string name="permission_needed">Is kaam ke liye storage permission chahiye</string>
+
+    <string name="fps_na">-- fps</string>
+    <string name="fps_fmt">%1$.1f fps</string>
+    <string name="frame_fmt">frame %1$d</string>
+    <string name="frames_ready">%1$d frames ready - export from the menu</string>
+    <string name="no_frames">Koi frame nahi bana. Script mein kinganim.show(...) use karo.</string>
+    <string name="exporting">Exporting...</string>
+    <string name="saved_to_downloads">Saved to Downloads/PythonKing</string>
+    <string name="export_failed">Export nahi ho paya</string>
+    <string name="replay">Replay</string>
+    <string name="stop">Stop</string>
+
+    <string name="menu_replay">Replay animation</string>
+    <string name="menu_save_mp4">Save as video (MP4)</string>
+    <string name="menu_save_gif">Save as GIF</string>
+    <string name="menu_save_pdf">Save as PDF</string>
+    <string name="menu_save_png">Save as image (PNG)</string>
+</resources>
